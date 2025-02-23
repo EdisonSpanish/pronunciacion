@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,7 +76,7 @@
     <div class="container">
         <h1>✨ English Pronunciation Challenge ✨</h1>
         <div class="frase" id="frase"></div>
-        <button onclick="iniciarReconocimiento()">Comenzar</button>
+        <button onclick="verificarPronunciacion()">Verificar Pronunciación</button>
         <div class="feedback" id="feedback"></div>
         <div class="progreso">
             <div class="barra-progreso" id="barra-progreso"></div>
@@ -88,7 +88,7 @@
     </div>
 
     <script>
-        // Lista de frases en inglés
+        // Lista de 50 frases en inglés
         const frases = [
             "The sun is shining brightly.",
             "I love to read books.",
@@ -148,53 +148,56 @@
         let incorrectas = 0;
         const totalFrases = frases.length;
 
-        // Inicializar el reconocimiento de voz
-        const reconocimiento = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        reconocimiento.lang = "en-US";
-        reconocimiento.interimResults = false;
-        reconocimiento.maxAlternatives = 1;
-
         // Mostrar la frase actual
         function mostrarFrase() {
             fraseActual = frases[indiceFrase];
             document.getElementById("frase").textContent = fraseActual;
+            document.getElementById("feedback").textContent = ""; // Limpiar feedback al mostrar nueva frase
         }
 
-        // Verificar la pronunciación
-        reconocimiento.onresult = (event) => {
-            const pronunciacion = event.results[0][0].transcript.trim().toLowerCase();
-            const fraseCorrecta = fraseActual.toLowerCase();
+        // Verificar la pronunciación con reconocimiento de voz
+        function verificarPronunciacion() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US'; // Configurar idioma a inglés
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
 
-            if (pronunciacion === fraseCorrecta) {
-                correctas++;
-                document.getElementById("feedback").textContent = "✅ ¡Correcto! 🎉";
-                document.getElementById("feedback").style.color = "green";
-                indiceFrase++;
-                if (indiceFrase < totalFrases) {
-                    mostrarFrase();
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const pronunciado = event.results[0][0].transcript.toLowerCase();
+                const fraseEsperada = fraseActual.toLowerCase();
+
+                if (pronunciado.trim() === fraseEsperada.trim()) {
+                    correctas++;
+                    document.getElementById("feedback").textContent = "✅ ¡Correcto! 🎉";
+                    document.getElementById("feedback").style.color = "green";
+                    indiceFrase++;
+                    if (indiceFrase < totalFrases) {
+                        mostrarFrase();
+                    } else {
+                        document.getElementById("feedback").textContent = "🏆 ¡Has completado el juego!";
+                        document.getElementById("frase").textContent = "";
+                        document.querySelector("button").style.display = "none";
+                    }
                 } else {
-                    document.getElementById("feedback").textContent = "🏆 ¡Has completado el juego!";
-                    document.getElementById("frase").textContent = "";
-                    document.querySelector("button").style.display = "none";
+                    incorrectas++;
+                    document.getElementById("feedback").textContent = `❌ Incorrecto. Dijiste: "${pronunciado}"`;
+                    document.getElementById("feedback").style.color = "red";
                 }
-            } else {
-                incorrectas++;
-                document.getElementById("feedback").textContent = "❌ Incorrecto. Intenta de nuevo.";
+
+                document.getElementById("correctas").textContent = `Correctas: ${correctas}`;
+                document.getElementById("incorrectas").textContent = `Incorrectas: ${incorrectas}`;
+
+                const progreso = ((correctas + incorrectas) / totalFrases) * 100;
+                document.getElementById("barra-progreso").style.width = `${progreso}%`;
+            };
+
+            recognition.onerror = function(event) {
+                document.getElementById("feedback").textContent = "❌ Error en el reconocimiento de voz. Intenta de nuevo.";
                 document.getElementById("feedback").style.color = "red";
-            }
-
-            document.getElementById("correctas").textContent = `Correctas: ${correctas}`;
-            document.getElementById("incorrectas").textContent = `Incorrectas: ${incorrectas}`;
-
-            const progreso = ((correctas + incorrectas) / totalFrases) * 100;
-            document.getElementById("barra-progreso").style.width = `${progreso}%`;
-        };
-
-        // Iniciar el reconocimiento de voz
-        function iniciarReconocimiento() {
-            reconocimiento.start();
-            document.getElementById("feedback").textContent = "Escuchando...";
-            document.getElementById("feedback").style.color = "#333";
+                console.error("Error en reconocimiento:", event.error);
+            };
         }
 
         // Iniciar el juego
