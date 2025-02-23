@@ -162,8 +162,11 @@
             recognition.start();
 
             recognition.onresult = function(event) {
+                // Guardar el texto original
+                const pronunciadoOriginal = event.results[0][0].transcript;
+
                 // Normalizar completamente las cadenas
-                let pronunciado = event.results[0][0].transcript.toLowerCase()
+                let pronunciado = pronunciadoOriginal.toLowerCase()
                     .replace(/[^a-z0-9\s]/g, '')
                     .replace(/\s+/g, ' ')
                     .trim();
@@ -172,12 +175,13 @@
                     .replace(/\s+/g, ' ')
                     .trim();
 
-                // Hacer "everyday" y "every day" equivalentes, y "he" y "she" también
+                // Aplicar correcciones específicas
                 pronunciado = pronunciado.replace("everyday", "every day").replace("she", "he");
                 fraseEsperada = fraseEsperada.replace("everyday", "every day").replace("she", "he");
 
-                console.log("Pronunciado: '" + pronunciado + "' (longitud: " + pronunciado.length + ")");
-                console.log("Esperado: '" + fraseEsperada + "' (longitud: " + fraseEsperada.length + ")");
+                console.log("Original pronunciado: '" + pronunciadoOriginal + "'");
+                console.log("Pronunciado normalizado: '" + pronunciado + "' (longitud: " + pronunciado.length + ")");
+                console.log("Esperado normalizado: '" + fraseEsperada + "' (longitud: " + fraseEsperada.length + ")");
 
                 if (pronunciado === fraseEsperada) {
                     correctas++;
@@ -193,7 +197,7 @@
                     }
                 } else {
                     incorrectas++;
-                    document.getElementById("feedback").textContent = `❌ Incorrecto. Dijiste: "${pronunciado}" (Esperado: "${fraseEsperada}") [Longitudes: ${pronunciado.length} vs ${fraseEsperada.length}]`;
+                    document.getElementById("feedback").textContent = `❌ Incorrecto. Dijiste: "${pronunciadoOriginal}" (Normalizado: "${pronunciado}") (Esperado: "${fraseEsperada}") [Longitudes: ${pronunciado.length} vs ${fraseEsperada.length}]`;
                     document.getElementById("feedback").style.color = "red";
                 }
 
@@ -214,5 +218,4 @@
         mostrarFrase();
     </script>
 </body>
-</html>
 </html>
