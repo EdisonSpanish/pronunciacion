@@ -163,16 +163,19 @@
 
             recognition.onresult = function(event) {
                 // Normalizar completamente las cadenas
-                const pronunciado = event.results[0][0].transcript.toLowerCase()
-                    .replace(/[^a-z0-9\s]/g, '') // Eliminar TODO excepto letras, números y espacios
-                    .replace(/\s+/g, ' ')        // Normalizar espacios
+                let pronunciado = event.results[0][0].transcript.toLowerCase()
+                    .replace(/[^a-z0-9\s]/g, '')
+                    .replace(/\s+/g, ' ')
                     .trim();
-                const fraseEsperada = fraseActual.toLowerCase()
+                let fraseEsperada = fraseActual.toLowerCase()
                     .replace(/[^a-z0-9\s]/g, '')
                     .replace(/\s+/g, ' ')
                     .trim();
 
-                // Depuración detallada
+                // Hacer "every day" y "everyday" equivalentes
+                pronunciado = pronunciado.replace("everyday", "every day");
+                fraseEsperada = fraseEsperada.replace("everyday", "every day");
+
                 console.log("Pronunciado: '" + pronunciado + "' (longitud: " + pronunciado.length + ")");
                 console.log("Esperado: '" + fraseEsperada + "' (longitud: " + fraseEsperada.length + ")");
 
