@@ -172,9 +172,9 @@
                     .replace(/\s+/g, ' ')
                     .trim();
 
-                // Hacer "every day" y "everyday" equivalentes
-                pronunciado = pronunciado.replace("everyday", "every day");
-                fraseEsperada = fraseEsperada.replace("everyday", "every day");
+                // Hacer "everyday" y "every day" equivalentes, y "he" y "she" también
+                pronunciado = pronunciado.replace("everyday", "every day").replace("she", "he");
+                fraseEsperada = fraseEsperada.replace("everyday", "every day").replace("she", "he");
 
                 console.log("Pronunciado: '" + pronunciado + "' (longitud: " + pronunciado.length + ")");
                 console.log("Esperado: '" + fraseEsperada + "' (longitud: " + fraseEsperada.length + ")");
@@ -214,4 +214,5 @@
         mostrarFrase();
     </script>
 </body>
+</html>
 </html>
