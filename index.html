@@ -88,7 +88,6 @@
     </div>
 
     <script>
-        // Lista de 50 frases en inglés
         const frases = [
             "The sun is shining brightly.",
             "I love to read books.",
@@ -148,33 +147,33 @@
         let incorrectas = 0;
         const totalFrases = frases.length;
 
-        // Mostrar la frase actual
         function mostrarFrase() {
             fraseActual = frases[indiceFrase];
             document.getElementById("frase").textContent = fraseActual;
-            document.getElementById("feedback").textContent = ""; // Limpiar feedback al mostrar nueva frase
+            document.getElementById("feedback").textContent = "";
         }
 
-        // Verificar la pronunciación con reconocimiento de voz
         function verificarPronunciacion() {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US'; // Configurar idioma a inglés
+            recognition.lang = 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
             recognition.start();
 
             recognition.onresult = function(event) {
-                const pronunciado = event.results[0][0].transcript.toLowerCase();
-                const fraseEsperada = fraseActual.toLowerCase();
+                const pronunciado = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+                const fraseEsperada = fraseActual.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+                console.log("Pronunciado:", pronunciado);
+                console.log("Esperado:", fraseEsperada);
 
-                if (pronunciado.trim() === fraseEsperada.trim()) {
+                if (pronunciado === fraseEsperada) {
                     correctas++;
                     document.getElementById("feedback").textContent = "✅ ¡Correcto! 🎉";
                     document.getElementById("feedback").style.color = "green";
                     indiceFrase++;
                     if (indiceFrase < totalFrases) {
-                        mostrarFrase();
+                        setTimeout(mostrarFrase, 500);
                     } else {
                         document.getElementById("feedback").textContent = "🏆 ¡Has completado el juego!";
                         document.getElementById("frase").textContent = "";
@@ -200,7 +199,6 @@
             };
         }
 
-        // Iniciar el juego
         mostrarFrase();
     </script>
 </body>
