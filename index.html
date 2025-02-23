@@ -1,205 +1,117 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ English Pronunciation Challenge ✨</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-        h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .frase {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .feedback {
-            font-size: 16px;
-            margin-top: 20px;
-        }
-        .correctas {
-            color: green;
-        }
-        .incorrectas {
-            color: red;
-        }
-        .progreso {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        .barra-progreso {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>✨ English Pronunciation Challenge ✨</h1>
-        <div class="frase" id="frase"></div>
-        <button onclick="verificarPronunciacion()">Verificar Pronunciación</button>
-        <div class="feedback" id="feedback"></div>
-        <div class="progreso">
-            <div class="barra-progreso" id="barra-progreso"></div>
-        </div>
-        <div>
-            <span class="correctas" id="correctas">Correctas: 0</span>
-            <span class="incorrectas" id="incorrectas">Incorrectas: 0</span>
-        </div>
-    </div>
+<script>
+    const frases = [
+        "The sun is shining brightly.",
+        "I love to read books.",
+        "She is eating an apple.",
+        "They are playing soccer.",
+        "He goes to school every day.",
+        "We are learning English.",
+        "The cat is sleeping on the couch.",
+        "I have a red car.",
+        "She sings beautifully.",
+        "They are watching a movie.",
+        "He is cooking dinner.",
+        "We are going to the park.",
+        "The dog is barking loudly.",
+        "I like to drink coffee.",
+        "She is writing a letter.",
+        "They are dancing at the party.",
+        "He is riding a bicycle.",
+        "We are listening to music.",
+        "The baby is crying.",
+        "I am reading a newspaper.",
+        "She is painting a picture.",
+        "They are swimming in the pool.",
+        "He is playing the guitar.",
+        "We are eating pizza.",
+        "The bird is flying in the sky.",
+        "I am walking to the store.",
+        "She is talking on the phone.",
+        "They are running in the park.",
+        "He is drinking water.",
+        "We are studying for the exam.",
+        "The teacher is writing on the board.",
+        "I am cleaning my room.",
+        "She is buying groceries.",
+        "They are visiting their grandparents.",
+        "He is fixing the car.",
+        "We are planting flowers.",
+        "The children are playing outside.",
+        "I am cooking breakfast.",
+        "She is washing the dishes.",
+        "They are building a sandcastle.",
+        "He is reading a book.",
+        "We are watching the sunset.",
+        "The train is arriving at the station.",
+        "I am waiting for the bus.",
+        "She is brushing her hair.",
+        "They are playing video games.",
+        "He is taking a shower.",
+        "We are having a picnic.",
+        "The clock is ticking.",
+        "I am writing an email."
+    ];
 
-    <script>
-        const frases = [
-            "The sun is shining brightly.",
-            "I love to read books.",
-            "She is eating an apple.",
-            "They are playing soccer.",
-            "He goes to school every day.",
-            "We are learning English.",
-            "The cat is sleeping on the couch.",
-            "I have a red car.",
-            "She sings beautifully.",
-            "They are watching a movie.",
-            "He is cooking dinner.",
-            "We are going to the park.",
-            "The dog is barking loudly.",
-            "I like to drink coffee.",
-            "She is writing a letter.",
-            "They are dancing at the party.",
-            "He is riding a bicycle.",
-            "We are listening to music.",
-            "The baby is crying.",
-            "I am reading a newspaper.",
-            "She is painting a picture.",
-            "They are swimming in the pool.",
-            "He is playing the guitar.",
-            "We are eating pizza.",
-            "The bird is flying in the sky.",
-            "I am walking to the store.",
-            "She is talking on the phone.",
-            "They are running in the park.",
-            "He is drinking water.",
-            "We are studying for the exam.",
-            "The teacher is writing on the board.",
-            "I am cleaning my room.",
-            "She is buying groceries.",
-            "They are visiting their grandparents.",
-            "He is fixing the car.",
-            "We are planting flowers.",
-            "The children are playing outside.",
-            "I am cooking breakfast.",
-            "She is washing the dishes.",
-            "They are building a sandcastle.",
-            "He is reading a book.",
-            "We are watching the sunset.",
-            "The train is arriving at the station.",
-            "I am waiting for the bus.",
-            "She is brushing her hair.",
-            "They are playing video games.",
-            "He is taking a shower.",
-            "We are having a picnic.",
-            "The clock is ticking.",
-            "I am writing an email."
-        ];
+    let fraseActual = "";
+    let indiceFrase = 0;
+    let correctas = 0;
+    let incorrectas = 0;
+    const totalFrases = frases.length;
 
-        let fraseActual = "";
-        let indiceFrase = 0;
-        let correctas = 0;
-        let incorrectas = 0;
-        const totalFrases = frases.length;
+    function mostrarFrase() {
+        fraseActual = frases[indiceFrase];
+        document.getElementById("frase").textContent = fraseActual;
+        document.getElementById("feedback").textContent = "";
+    }
 
-        function mostrarFrase() {
-            fraseActual = frases[indiceFrase];
-            document.getElementById("frase").textContent = fraseActual;
-            document.getElementById("feedback").textContent = "";
-        }
+    function verificarPronunciacion() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
-        function verificarPronunciacion() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
+        recognition.start();
 
-            recognition.start();
+        recognition.onresult = function(event) {
+            const pronunciado = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
+            const fraseEsperada = fraseActual.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
 
-            recognition.onresult = function(event) {
-                const pronunciado = event.results[0][0].transcript.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
-                const fraseEsperada = fraseActual.toLowerCase().replace(/[.,!?]/g, '').replace(/\s+/g, ' ').trim();
-                console.log("Pronunciado:", pronunciado);
-                console.log("Esperado:", fraseEsperada);
+            // Mostrar en consola para depurar
+            console.log("Pronunciado: '" + pronunciado + "'");
+            console.log("Esperado: '" + fraseEsperada + "'");
+            console.log("Longitud pronunciado:", pronunciado.length, "Longitud esperado:", fraseEsperada.length);
 
-                if (pronunciado === fraseEsperada) {
-                    correctas++;
-                    document.getElementById("feedback").textContent = "✅ ¡Correcto! 🎉";
-                    document.getElementById("feedback").style.color = "green";
-                    indiceFrase++;
-                    if (indiceFrase < totalFrases) {
-                        setTimeout(mostrarFrase, 500);
-                    } else {
-                        document.getElementById("feedback").textContent = "🏆 ¡Has completado el juego!";
-                        document.getElementById("frase").textContent = "";
-                        document.querySelector("button").style.display = "none";
-                    }
+            if (pronunciado === fraseEsperada) {
+                correctas++;
+                document.getElementById("feedback").textContent = "✅ ¡Correcto! 🎉";
+                document.getElementById("feedback").style.color = "green";
+                indiceFrase++;
+                if (indiceFrase < totalFrases) {
+                    setTimeout(mostrarFrase, 500);
                 } else {
-                    incorrectas++;
-                    document.getElementById("feedback").textContent = `❌ Incorrecto. Dijiste: "${pronunciado}"`;
-                    document.getElementById("feedback").style.color = "red";
+                    document.getElementById("feedback").textContent = "🏆 ¡Has completado el juego!";
+                    document.getElementById("frase").textContent = "";
+                    document.querySelector("button").style.display = "none";
                 }
-
-                document.getElementById("correctas").textContent = `Correctas: ${correctas}`;
-                document.getElementById("incorrectas").textContent = `Incorrectas: ${incorrectas}`;
-
-                const progreso = ((correctas + incorrectas) / totalFrases) * 100;
-                document.getElementById("barra-progreso").style.width = `${progreso}%`;
-            };
-
-            recognition.onerror = function(event) {
-                document.getElementById("feedback").textContent = "❌ Error en el reconocimiento de voz. Intenta de nuevo.";
+            } else {
+                incorrectas++;
+                document.getElementById("feedback").textContent = `❌ Incorrecto. Dijiste: "${pronunciado}" (Esperado: "${fraseEsperada}")`;
                 document.getElementById("feedback").style.color = "red";
-                console.error("Error en reconocimiento:", event.error);
-            };
-        }
+            }
 
-        mostrarFrase();
-    </script>
-</body>
-</html>
+            document.getElementById("correctas").textContent = `Correctas: ${correctas}`;
+            document.getElementById("incorrectas").textContent = `Incorrectas: ${incorrectas}`;
+
+            const progreso = ((correctas + incorrectas) / totalFrases) * 100;
+            document.getElementById("barra-progreso").style.width = `${progreso}%`;
+        };
+
+        recognition.onerror = function(event) {
+            document.getElementById("feedback").textContent = "❌ Error en el reconocimiento de voz. Intenta de nuevo.";
+            document.getElementById("feedback").style.color = "red";
+            console.error("Error en reconocimiento:", event.error);
+        };
+    }
+
+    mostrarFrase();
+</script>
